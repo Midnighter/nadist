@@ -125,4 +125,9 @@ setup(
         for root, _, _ in os.walk("src")
         for path in glob(join(root, "*.pyx" if Cython else "*.c"))
     ],
+    tests_require=[
+        "tox",
+        "pytest-helpers-namespace",
+        "scipy"
+    ],
 )
