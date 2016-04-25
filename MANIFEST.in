@@ -13,7 +13,7 @@ include .isort.cfg
 include AUTHORS.rst
 include CHANGELOG.rst
 include CONTRIBUTING.rst
-include LICENSE
+include LICENSE.rst
 include README.rst
 
 include tox.ini .travis.yml appveyor.yml
