@@ -902,9 +902,6 @@ static void __Pyx_BufFmt_Init(__Pyx_BufFmt_Context* ctx,
                               __Pyx_BufFmt_StackElem* stack,
                               __Pyx_TypeInfo* type); // PROTO
 
-/* GetModuleGlobalName.proto */
-static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
-
 /* PyObjectCall.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
@@ -912,11 +909,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
 
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
-#define __Pyx_BufPtrCContig2d(type, buf, i0, s0, i1, s1) ((type)((char*)buf + i0 * s0) + i1)
-#define __Pyx_BufPtrCContig1d(type, buf, i0, s0) ((type)buf + i0)
 /* PyThreadStateGet.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -944,6 +936,14 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
+/* GetModuleGlobalName.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
+
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
+
+#define __Pyx_BufPtrCContig2d(type, buf, i0, s0, i1, s1) ((type)((char*)buf + i0 * s0) + i1)
+#define __Pyx_BufPtrCContig1d(type, buf, i0, s0) ((type)buf + i0)
 /* DictGetItem.proto */
 #if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
 static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
@@ -1022,6 +1022,9 @@ typedef struct {
 /* None.proto */
 static Py_ssize_t __Pyx_zeros[] = {0, 0, 0, 0, 0, 0, 0, 0};
 static Py_ssize_t __Pyx_minusones[] = {-1, -1, -1, -1, -1, -1, -1, -1};
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value);
 
 /* None.proto */
 #if CYTHON_CCOMPLEX
@@ -1203,8 +1206,8 @@ static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint8_t = { "uint8_t", NU
 int __pyx_module_is_main_nadist__ccode__src__spatial_wrap = 0;
 
 /* Implementation of 'nadist.ccode.src.spatial_wrap' */
-static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_ValueError;
+static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_RuntimeError;
 static const char __pyx_k_i[] = "i";
 static const char __pyx_k_j[] = "j";
@@ -1220,6 +1223,7 @@ static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_zeros[] = "zeros";
 static const char __pyx_k_double[] = "double";
+static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_num_dim[] = "num_dim";
 static const char __pyx_k_num_vec[] = "num_vec";
@@ -1234,6 +1238,7 @@ static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype cod
 static const char __pyx_k_Format_string_allocated_too_shor[] = "Format string allocated too short, see comment in numpy.pxd";
 static const char __pyx_k_Non_native_byte_order_not_suppor[] = "Non-native byte order not supported";
 static const char __pyx_k_ndarray_is_not_Fortran_contiguou[] = "ndarray is not Fortran contiguous";
+static const char __pyx_k_shape_of_mask_0_d_1_d_does_not_f[] = "shape of mask ({0:d}, {1:d}) does not fit the array ({2:d}, {3:d})";
 static const char __pyx_k_Format_string_allocated_too_shor_2[] = "Format string allocated too short.";
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor_2;
@@ -1245,6 +1250,7 @@ static PyObject *__pyx_n_s_dists;
 static PyObject *__pyx_n_s_double;
 static PyObject *__pyx_n_s_dtype;
 static PyObject *__pyx_n_s_euclidean_pdist;
+static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_kp_s_home_moritz_Work_Codebase_nadis;
 static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_n_s_import;
@@ -1260,6 +1266,7 @@ static PyObject *__pyx_n_s_num_dim;
 static PyObject *__pyx_n_s_num_vec;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_n_s_range;
+static PyObject *__pyx_kp_s_shape_of_mask_0_d_1_d_does_not_f;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_zeros;
@@ -1280,7 +1287,7 @@ static PyObject *__pyx_codeobj__8;
  * 
  * def euclidean_pdist(np.ndarray[np.double_t, ndim=2, mode="c"] arr,             # <<<<<<<<<<<<<<
  *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
- *     cdef Py_ssize_t num_vec = arr.shape[0]
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:
  */
 
 /* Python wrapper */
@@ -1363,18 +1370,18 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
   __Pyx_Buffer __pyx_pybuffer_mask;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
+  int __pyx_t_1;
+  int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  PyArrayObject *__pyx_t_6 = NULL;
-  Py_ssize_t __pyx_t_7;
-  Py_ssize_t __pyx_t_8;
-  Py_ssize_t __pyx_t_9;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
   Py_ssize_t __pyx_t_10;
-  Py_ssize_t __pyx_t_11;
-  Py_ssize_t __pyx_t_12;
+  PyObject *__pyx_t_11 = NULL;
+  PyArrayObject *__pyx_t_12 = NULL;
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
   Py_ssize_t __pyx_t_15;
@@ -1382,6 +1389,11 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
   Py_ssize_t __pyx_t_17;
   Py_ssize_t __pyx_t_18;
   Py_ssize_t __pyx_t_19;
+  Py_ssize_t __pyx_t_20;
+  Py_ssize_t __pyx_t_21;
+  Py_ssize_t __pyx_t_22;
+  Py_ssize_t __pyx_t_23;
+  Py_ssize_t __pyx_t_24;
   __Pyx_RefNannySetupContext("euclidean_pdist", 0);
   __pyx_pybuffer_dists.pybuffer.buf = NULL;
   __pyx_pybuffer_dists.refcount = 0;
@@ -1409,14 +1421,119 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
   /* "nadist/ccode/src/spatial_wrap.pyx":37
  * def euclidean_pdist(np.ndarray[np.double_t, ndim=2, mode="c"] arr,
  *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:             # <<<<<<<<<<<<<<
+ *         raise ValueError("shape of mask ({0:d}, {1:d}) does not fit the array "\
+ *             "({2:d}, {3:d})".format(mask.shape[0], mask.shape[1], arr.shape[0],
+ */
+  __pyx_t_2 = (((__pyx_v_arr->dimensions[0]) != (__pyx_v_mask->dimensions[0])) != 0);
+  if (!__pyx_t_2) {
+  } else {
+    __pyx_t_1 = __pyx_t_2;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_2 = (((__pyx_v_arr->dimensions[1]) != (__pyx_v_mask->dimensions[1])) != 0);
+  __pyx_t_1 = __pyx_t_2;
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "nadist/ccode/src/spatial_wrap.pyx":39
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:
+ *         raise ValueError("shape of mask ({0:d}, {1:d}) does not fit the array "\
+ *             "({2:d}, {3:d})".format(mask.shape[0], mask.shape[1], arr.shape[0],             # <<<<<<<<<<<<<<
+ *             arr.shape[1]))
+ *     cdef Py_ssize_t num_vec = arr.shape[0]
+ */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_shape_of_mask_0_d_1_d_does_not_f, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_mask->dimensions[0])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_mask->dimensions[1])); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_arr->dimensions[0])); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+
+    /* "nadist/ccode/src/spatial_wrap.pyx":40
+ *         raise ValueError("shape of mask ({0:d}, {1:d}) does not fit the array "\
+ *             "({2:d}, {3:d})".format(mask.shape[0], mask.shape[1], arr.shape[0],
+ *             arr.shape[1]))             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t num_vec = arr.shape[0]
+ *     cdef Py_ssize_t num_dim = arr.shape[1]
+ */
+    __pyx_t_8 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_arr->dimensions[1])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_9 = NULL;
+    __pyx_t_10 = 0;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_9)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_9);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_4, function);
+        __pyx_t_10 = 1;
+      }
+    }
+    __pyx_t_11 = PyTuple_New(4+__pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    if (__pyx_t_9) {
+      __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_9); __pyx_t_9 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_11, 0+__pyx_t_10, __pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_11, 1+__pyx_t_10, __pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_11, 2+__pyx_t_10, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_11, 3+__pyx_t_10, __pyx_t_8);
+    __pyx_t_5 = 0;
+    __pyx_t_6 = 0;
+    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+    /* "nadist/ccode/src/spatial_wrap.pyx":38
+ *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:
+ *         raise ValueError("shape of mask ({0:d}, {1:d}) does not fit the array "\             # <<<<<<<<<<<<<<
+ *             "({2:d}, {3:d})".format(mask.shape[0], mask.shape[1], arr.shape[0],
+ *             arr.shape[1]))
+ */
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(0, 38, __pyx_L1_error)
+
+    /* "nadist/ccode/src/spatial_wrap.pyx":37
+ * def euclidean_pdist(np.ndarray[np.double_t, ndim=2, mode="c"] arr,
+ *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:             # <<<<<<<<<<<<<<
+ *         raise ValueError("shape of mask ({0:d}, {1:d}) does not fit the array "\
+ *             "({2:d}, {3:d})".format(mask.shape[0], mask.shape[1], arr.shape[0],
+ */
+  }
+
+  /* "nadist/ccode/src/spatial_wrap.pyx":41
+ *             "({2:d}, {3:d})".format(mask.shape[0], mask.shape[1], arr.shape[0],
+ *             arr.shape[1]))
  *     cdef Py_ssize_t num_vec = arr.shape[0]             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t num_dim = arr.shape[1]
  *     cdef Py_ssize_t i = 0
  */
   __pyx_v_num_vec = (__pyx_v_arr->dimensions[0]);
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":38
- *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
+  /* "nadist/ccode/src/spatial_wrap.pyx":42
+ *             arr.shape[1]))
  *     cdef Py_ssize_t num_vec = arr.shape[0]
  *     cdef Py_ssize_t num_dim = arr.shape[1]             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t i = 0
@@ -1424,7 +1541,7 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
  */
   __pyx_v_num_dim = (__pyx_v_arr->dimensions[1]);
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":39
+  /* "nadist/ccode/src/spatial_wrap.pyx":43
  *     cdef Py_ssize_t num_vec = arr.shape[0]
  *     cdef Py_ssize_t num_dim = arr.shape[1]
  *     cdef Py_ssize_t i = 0             # <<<<<<<<<<<<<<
@@ -1433,7 +1550,7 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
  */
   __pyx_v_i = 0;
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":40
+  /* "nadist/ccode/src/spatial_wrap.pyx":44
  *     cdef Py_ssize_t num_dim = arr.shape[1]
  *     cdef Py_ssize_t i = 0
  *     cdef Py_ssize_t j = 0             # <<<<<<<<<<<<<<
@@ -1442,7 +1559,7 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
  */
   __pyx_v_j = 0;
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":41
+  /* "nadist/ccode/src/spatial_wrap.pyx":45
  *     cdef Py_ssize_t i = 0
  *     cdef Py_ssize_t j = 0
  *     cdef Py_ssize_t k = 0             # <<<<<<<<<<<<<<
@@ -1451,126 +1568,126 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
  */
   __pyx_v_k = 0;
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":42
+  /* "nadist/ccode/src/spatial_wrap.pyx":46
  *     cdef Py_ssize_t j = 0
  *     cdef Py_ssize_t k = 0
  *     cdef np.ndarray[np.double_t, ndim=1, mode="c"] dists = np.zeros(num_vec * (num_vec - 1) // 2,             # <<<<<<<<<<<<<<
  *             dtype=np.double)
  *     for i in range(num_vec - 1):
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyInt_FromSsize_t(((__pyx_v_num_vec * (__pyx_v_num_vec - 1)) / 2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyInt_FromSsize_t(((__pyx_v_num_vec * (__pyx_v_num_vec - 1)) / 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":43
+  /* "nadist/ccode/src/spatial_wrap.pyx":47
  *     cdef Py_ssize_t k = 0
  *     cdef np.ndarray[np.double_t, ndim=1, mode="c"] dists = np.zeros(num_vec * (num_vec - 1) // 2,
  *             dtype=np.double)             # <<<<<<<<<<<<<<
  *     for i in range(num_vec - 1):
  *         for j in range(i + 1, num_vec):
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_8 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_double); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":42
+  /* "nadist/ccode/src/spatial_wrap.pyx":46
  *     cdef Py_ssize_t j = 0
  *     cdef Py_ssize_t k = 0
  *     cdef np.ndarray[np.double_t, ndim=1, mode="c"] dists = np.zeros(num_vec * (num_vec - 1) // 2,             # <<<<<<<<<<<<<<
  *             dtype=np.double)
  *     for i in range(num_vec - 1):
  */
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_11, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 42, __pyx_L1_error)
-  __pyx_t_6 = ((PyArrayObject *)__pyx_t_5);
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_12 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dists.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dists.rcbuffer->pybuffer, (PyObject*)__pyx_t_12, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_dists = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_dists.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 42, __pyx_L1_error)
+      __PYX_ERR(0, 46, __pyx_L1_error)
     } else {__pyx_pybuffernd_dists.diminfo[0].strides = __pyx_pybuffernd_dists.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dists.diminfo[0].shape = __pyx_pybuffernd_dists.rcbuffer->pybuffer.shape[0];
     }
   }
-  __pyx_t_6 = 0;
-  __pyx_v_dists = ((PyArrayObject *)__pyx_t_5);
-  __pyx_t_5 = 0;
+  __pyx_t_12 = 0;
+  __pyx_v_dists = ((PyArrayObject *)__pyx_t_7);
+  __pyx_t_7 = 0;
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":44
+  /* "nadist/ccode/src/spatial_wrap.pyx":48
  *     cdef np.ndarray[np.double_t, ndim=1, mode="c"] dists = np.zeros(num_vec * (num_vec - 1) // 2,
  *             dtype=np.double)
  *     for i in range(num_vec - 1):             # <<<<<<<<<<<<<<
  *         for j in range(i + 1, num_vec):
  *             dists[k] = euclidean_distance(&arr[i, 0], &arr[j, 0], <uint8_t*>&mask[i, 0],
  */
-  __pyx_t_7 = (__pyx_v_num_vec - 1);
-  for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
-    __pyx_v_i = __pyx_t_8;
+  __pyx_t_10 = (__pyx_v_num_vec - 1);
+  for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_10; __pyx_t_13+=1) {
+    __pyx_v_i = __pyx_t_13;
 
-    /* "nadist/ccode/src/spatial_wrap.pyx":45
+    /* "nadist/ccode/src/spatial_wrap.pyx":49
  *             dtype=np.double)
  *     for i in range(num_vec - 1):
  *         for j in range(i + 1, num_vec):             # <<<<<<<<<<<<<<
  *             dists[k] = euclidean_distance(&arr[i, 0], &arr[j, 0], <uint8_t*>&mask[i, 0],
  *                     <uint8_t*>&mask[j, 0], num_dim)
  */
-    __pyx_t_9 = __pyx_v_num_vec;
-    for (__pyx_t_10 = (__pyx_v_i + 1); __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
-      __pyx_v_j = __pyx_t_10;
+    __pyx_t_14 = __pyx_v_num_vec;
+    for (__pyx_t_15 = (__pyx_v_i + 1); __pyx_t_15 < __pyx_t_14; __pyx_t_15+=1) {
+      __pyx_v_j = __pyx_t_15;
 
-      /* "nadist/ccode/src/spatial_wrap.pyx":46
+      /* "nadist/ccode/src/spatial_wrap.pyx":50
  *     for i in range(num_vec - 1):
  *         for j in range(i + 1, num_vec):
  *             dists[k] = euclidean_distance(&arr[i, 0], &arr[j, 0], <uint8_t*>&mask[i, 0],             # <<<<<<<<<<<<<<
  *                     <uint8_t*>&mask[j, 0], num_dim)
  *             k += 1
  */
-      __pyx_t_11 = __pyx_v_i;
-      __pyx_t_12 = 0;
-      __pyx_t_13 = __pyx_v_j;
-      __pyx_t_14 = 0;
-      __pyx_t_15 = __pyx_v_i;
-      __pyx_t_16 = 0;
+      __pyx_t_16 = __pyx_v_i;
+      __pyx_t_17 = 0;
+      __pyx_t_18 = __pyx_v_j;
+      __pyx_t_19 = 0;
+      __pyx_t_20 = __pyx_v_i;
+      __pyx_t_21 = 0;
 
-      /* "nadist/ccode/src/spatial_wrap.pyx":47
+      /* "nadist/ccode/src/spatial_wrap.pyx":51
  *         for j in range(i + 1, num_vec):
  *             dists[k] = euclidean_distance(&arr[i, 0], &arr[j, 0], <uint8_t*>&mask[i, 0],
  *                     <uint8_t*>&mask[j, 0], num_dim)             # <<<<<<<<<<<<<<
  *             k += 1
  *     return dists
  */
-      __pyx_t_17 = __pyx_v_j;
-      __pyx_t_18 = 0;
+      __pyx_t_22 = __pyx_v_j;
+      __pyx_t_23 = 0;
 
-      /* "nadist/ccode/src/spatial_wrap.pyx":46
+      /* "nadist/ccode/src/spatial_wrap.pyx":50
  *     for i in range(num_vec - 1):
  *         for j in range(i + 1, num_vec):
  *             dists[k] = euclidean_distance(&arr[i, 0], &arr[j, 0], <uint8_t*>&mask[i, 0],             # <<<<<<<<<<<<<<
  *                     <uint8_t*>&mask[j, 0], num_dim)
  *             k += 1
  */
-      __pyx_t_19 = __pyx_v_k;
-      *__Pyx_BufPtrCContig1d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_dists.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_dists.diminfo[0].strides) = euclidean_distance((&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_arr.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_arr.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_arr.diminfo[1].strides))), (&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_arr.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_arr.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_arr.diminfo[1].strides))), ((uint8_t *)(&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_uint8_t *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_mask.diminfo[0].strides, __pyx_t_16, __pyx_pybuffernd_mask.diminfo[1].strides)))), ((uint8_t *)(&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_uint8_t *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_mask.diminfo[0].strides, __pyx_t_18, __pyx_pybuffernd_mask.diminfo[1].strides)))), __pyx_v_num_dim);
+      __pyx_t_24 = __pyx_v_k;
+      *__Pyx_BufPtrCContig1d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_dists.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_dists.diminfo[0].strides) = euclidean_distance((&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_arr.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_arr.diminfo[0].strides, __pyx_t_17, __pyx_pybuffernd_arr.diminfo[1].strides))), (&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_arr.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_arr.diminfo[0].strides, __pyx_t_19, __pyx_pybuffernd_arr.diminfo[1].strides))), ((uint8_t *)(&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_uint8_t *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_20, __pyx_pybuffernd_mask.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_mask.diminfo[1].strides)))), ((uint8_t *)(&(*__Pyx_BufPtrCContig2d(__pyx_t_5numpy_uint8_t *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_mask.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_mask.diminfo[1].strides)))), __pyx_v_num_dim);
 
-      /* "nadist/ccode/src/spatial_wrap.pyx":48
+      /* "nadist/ccode/src/spatial_wrap.pyx":52
  *             dists[k] = euclidean_distance(&arr[i, 0], &arr[j, 0], <uint8_t*>&mask[i, 0],
  *                     <uint8_t*>&mask[j, 0], num_dim)
  *             k += 1             # <<<<<<<<<<<<<<
@@ -1580,7 +1697,7 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
     }
   }
 
-  /* "nadist/ccode/src/spatial_wrap.pyx":49
+  /* "nadist/ccode/src/spatial_wrap.pyx":53
  *                     <uint8_t*>&mask[j, 0], num_dim)
  *             k += 1
  *     return dists             # <<<<<<<<<<<<<<
@@ -1595,16 +1712,19 @@ static PyObject *__pyx_pf_6nadist_5ccode_3src_12spatial_wrap_euclidean_pdist(CYT
  * 
  * def euclidean_pdist(np.ndarray[np.double_t, ndim=2, mode="c"] arr,             # <<<<<<<<<<<<<<
  *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
- *     cdef Py_ssize_t num_vec = arr.shape[0]
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_11);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -3782,6 +3902,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_double, __pyx_k_double, sizeof(__pyx_k_double), 0, 0, 1, 1},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
   {&__pyx_n_s_euclidean_pdist, __pyx_k_euclidean_pdist, sizeof(__pyx_k_euclidean_pdist), 0, 0, 1, 1},
+  {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_kp_s_home_moritz_Work_Codebase_nadis, __pyx_k_home_moritz_Work_Codebase_nadis, sizeof(__pyx_k_home_moritz_Work_Codebase_nadis), 0, 0, 1, 0},
   {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
@@ -3797,14 +3918,15 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_num_vec, __pyx_k_num_vec, sizeof(__pyx_k_num_vec), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+  {&__pyx_kp_s_shape_of_mask_0_d_1_d_does_not_f, __pyx_k_shape_of_mask_0_d_1_d_does_not_f, sizeof(__pyx_k_shape_of_mask_0_d_1_d_does_not_f), 0, 0, 1, 0},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
   {&__pyx_n_s_zeros, __pyx_k_zeros, sizeof(__pyx_k_zeros), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 44, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 218, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 799, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -3886,7 +4008,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * def euclidean_pdist(np.ndarray[np.double_t, ndim=2, mode="c"] arr,             # <<<<<<<<<<<<<<
  *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
- *     cdef Py_ssize_t num_vec = arr.shape[0]
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:
  */
   __pyx_tuple__7 = PyTuple_Pack(8, __pyx_n_s_arr, __pyx_n_s_mask, __pyx_n_s_num_vec, __pyx_n_s_num_dim, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_k, __pyx_n_s_dists); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
@@ -4036,7 +4158,7 @@ PyMODINIT_FUNC PyInit_spatial_wrap(void)
  * 
  * def euclidean_pdist(np.ndarray[np.double_t, ndim=2, mode="c"] arr,             # <<<<<<<<<<<<<<
  *         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
- *     cdef Py_ssize_t num_vec = arr.shape[0]
+ *     if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6nadist_5ccode_3src_12spatial_wrap_1euclidean_pdist, NULL, __pyx_n_s_nadist_ccode_src_spatial_wrap); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -4834,26 +4956,8 @@ static CYTHON_INLINE void __Pyx_SafeReleaseBuffer(Py_buffer* info) {
   __Pyx_ReleaseBuffer(info);
 }
 
-/* GetModuleGlobalName */
-  static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
-    PyObject *result;
-#if CYTHON_COMPILING_IN_CPYTHON
-    result = PyDict_GetItem(__pyx_d, name);
-    if (likely(result)) {
-        Py_INCREF(result);
-    } else {
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    if (!result) {
-        PyErr_Clear();
-#endif
-        result = __Pyx_GetBuiltinName(name);
-    }
-    return result;
-}
-
 /* PyObjectCall */
-    #if CYTHON_COMPILING_IN_CPYTHON
+  #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
     PyObject *result;
     ternaryfunc call = func->ob_type->tp_call;
@@ -4872,21 +4976,8 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 }
 #endif
 
-/* ExtTypeTest */
-    static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(PyObject_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
-}
-
 /* PyErrFetchRestore */
-    #if CYTHON_COMPILING_IN_CPYTHON
+  #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
     PyObject *tmp_type, *tmp_value, *tmp_tb;
     tmp_type = tstate->curexc_type;
@@ -4910,7 +5001,7 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 #endif
 
 /* RaiseException */
-    #if PY_MAJOR_VERSION < 3
+  #if PY_MAJOR_VERSION < 3
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
                         CYTHON_UNUSED PyObject *cause) {
     __Pyx_PyThreadState_declare
@@ -5071,6 +5162,37 @@ bad:
     return;
 }
 #endif
+
+/* GetModuleGlobalName */
+    static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
+    PyObject *result;
+#if CYTHON_COMPILING_IN_CPYTHON
+    result = PyDict_GetItem(__pyx_d, name);
+    if (likely(result)) {
+        Py_INCREF(result);
+    } else {
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    if (!result) {
+        PyErr_Clear();
+#endif
+        result = __Pyx_GetBuiltinName(name);
+    }
+    return result;
+}
+
+/* ExtTypeTest */
+      static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(PyObject_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
+}
 
 /* RaiseTooManyValuesToUnpack */
       static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
@@ -5346,7 +5468,34 @@ static void __Pyx_ReleaseBuffer(Py_buffer *view) {
 #endif
 
 
-      /* None */
+      /* CIntToPy */
+      static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value) {
+    const Py_intptr_t neg_one = (Py_intptr_t) -1, const_zero = (Py_intptr_t) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(Py_intptr_t) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+        }
+    } else {
+        if (sizeof(Py_intptr_t) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(Py_intptr_t) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(Py_intptr_t),
+                                     little, !is_unsigned);
+    }
+}
+
+/* None */
       #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
     static CYTHON_INLINE __pyx_t_float_complex __pyx_t_float_complex_from_parts(float x, float y) {

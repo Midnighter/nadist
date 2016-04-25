@@ -55,13 +55,16 @@ def euclidean_pdist(arr, mask=None):
     num_dim = arr.shape[1]
     dists = np.zeros(num_vec * (num_vec - 1) // 2, dtype=float)
     if mask is None:
-# invert mask to get positions that we *do* want to compute
+        # invert mask to get positions that we *do* want to compute
         try:
+            # in case it's a numpy.ma.array
             mask = ~arr.mask
+            arr = arr.data
         except AttributeError:
             mask = ~np.isnan(arr)
-        if mask.shape != arr.shape:
-            mask = ~np.isnan(arr)
+    elif mask.shape != arr.shape:
+        raise ValueError("shape of mask {0} does not fit the array {1}".format(
+            mask.shape, arr.shape))
     else:
         mask = ~mask
     vec_mask = np.zeros(num_dim, dtype=bool)

@@ -32,6 +32,10 @@ np.import_array()
 
 def euclidean_pdist(np.ndarray[np.double_t, ndim=2, mode="c"] arr,
         np.ndarray[np.uint8_t, ndim=2, cast=True, mode="c"] mask):
+    if arr.shape[0] != mask.shape[0] or arr.shape[1] != mask.shape[1]:
+        raise ValueError("shape of mask ({0:d}, {1:d}) does not fit the array "\
+            "({2:d}, {3:d})".format(mask.shape[0], mask.shape[1], arr.shape[0],
+            arr.shape[1]))
     cdef Py_ssize_t num_vec = arr.shape[0]
     cdef Py_ssize_t num_dim = arr.shape[1]
     cdef Py_ssize_t i = 0

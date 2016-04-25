@@ -28,6 +28,18 @@ from scipy.spatial.distance import pdist
 from nadist.pure import euclidean_pdist
 
 
+class TestShapes:
+
+    def test_wrong_shape(self, dimension):
+        with pytest.raises(ValueError):
+            euclidean_pdist(dimension)
+
+    def test_mask_shape(self, complete):
+        with pytest.raises(ValueError):
+            euclidean_pdist(complete, np.isnan(complete[:complete.shape[0] - 10,
+                :complete.shape[1] - 10]))
+
+
 class TestEuclideanMissAll:
 
     def test_missing_default_mask(self, miss_all):
