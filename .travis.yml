@@ -9,18 +9,12 @@ env:
     - TOXENV=check
     - TOXENV=docs
 
-    - TOXENV=2.7-cython-cover,extension-coveralls,coveralls
-    - TOXENV=2.7-cython-nocov
-    - TOXENV=2.7-numpy-cover,extension-coveralls,coveralls
-    - TOXENV=2.7-numpy-nocov
-    - TOXENV=3.4-cython-cover,extension-coveralls,coveralls
-    - TOXENV=3.4-cython-nocov
-    - TOXENV=3.4-numpy-cover,extension-coveralls,coveralls
-    - TOXENV=3.4-numpy-nocov
-    - TOXENV=3.5-cython-cover,extension-coveralls,coveralls
-    - TOXENV=3.5-cython-nocov
-    - TOXENV=3.5-numpy-cover,extension-coveralls,coveralls
-    - TOXENV=3.5-numpy-nocov
+    - TOXENV=2.7-cover,extension-coveralls,coveralls
+    - TOXENV=2.7-nocov
+    - TOXENV=3.4-cover,extension-coveralls,coveralls
+    - TOXENV=3.4-nocov
+    - TOXENV=3.5-cover,extension-coveralls,coveralls
+    - TOXENV=3.5-nocov
 before_install:
   - python --version
   - uname -a
