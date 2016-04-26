@@ -114,7 +114,10 @@ setup(
     ],
     setup_requires=[
         "cython",
-    ] if Cython is not None else [],
+        "numpy"
+    ] if Cython is not None else [
+        "numpy"
+    ],
     cmdclass={"build_ext": optional_build_ext},
     ext_modules=[
         Extension(
