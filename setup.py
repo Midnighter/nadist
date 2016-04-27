@@ -19,6 +19,7 @@ try:
     import Cython
 except ImportError:
     Cython = None
+import numpy
 
 
 def read(*names, **kwargs):
@@ -123,7 +124,7 @@ setup(
         Extension(
             splitext(relpath(path, "src").replace(os.sep, "."))[0],
             sources=[path],
-            include_dirs=[dirname(path)]
+            include_dirs=[dirname(path), numpy.get_include()]
         )
         for root, _, _ in os.walk("src")
         for path in glob(join(root, "*.pyx" if Cython else "*.c"))
