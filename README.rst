@@ -14,6 +14,8 @@ Overview
         | |coveralls|
     * - package
       - |version| |downloads| |wheel| |supported-versions| |supported-implementations|
+    * - chat
+      - | |chat|
 
 .. |docs| image:: https://readthedocs.org/projects/nadist/badge/?style=flat
     :target: https://readthedocs.org/projects/nadist
@@ -51,6 +53,9 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/nadist
 
+.. |chat| image:: https://badges.gitter.im/Midnighter/nadist.svg
+    :alt: Gitter
+    :target: https://gitter.im/Midnighter/nadist
 
 .. end-badges
 

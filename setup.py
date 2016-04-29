@@ -2,15 +2,15 @@
 # -*- encoding: utf-8 -*-
 
 
-from __future__ import absolute_import, print_function
+from __future__ import (absolute_import, print_function)
 
 import io
 import os
 import re
 from glob import glob
-from os.path import basename, dirname, join, relpath, splitext
+from os.path import (basename, dirname, join, relpath, splitext)
 
-from setuptools import Extension, find_packages, setup
+from setuptools import (Extension, find_packages, setup)
 from setuptools.command.build_ext import build_ext
 
 try:
@@ -19,7 +19,6 @@ try:
     import Cython
 except ImportError:
     Cython = None
-import numpy
 
 
 def read(*names, **kwargs):
@@ -59,6 +58,43 @@ class optional_build_ext(build_ext):
         print("")
         print("    " + repr(e))
         print("*" * 80)
+
+class DelayedExtension(Extension, object):
+    def __init__(self, *args, **kwargs):
+        super(DelayedExtension, self).__init__(*args, **kwargs)
+        self._include_dirs_hooks = []
+        self._include_dirs = None
+        self.include_dirs_hook = self._include_dirs_hooks.append
+
+    @property
+    def include_dirs(self):
+        if "include_dirs" not in self.__dict__:
+            include_dirs = self.__dict__["include_dirs"] = list(self._include_dirs or [])
+            for hook in self._include_dirs_hooks:
+                include_dirs.extend(hook())
+        return self.__dict__["include_dirs"]
+
+    @include_dirs.setter
+    def include_dirs(self, value):
+        self._include_dirs = value
+
+# all these extensions depend on numpy, so no need to distinguish
+pkg_extensions = [
+    DelayedExtension(
+        name=splitext(relpath(path, "src").replace(os.sep, "."))[0],
+        sources=[path],
+        include_dirs=[dirname(path)]
+    )
+    for (root, _, _) in os.walk("src")
+    for path in glob(join(root, "*.pyx" if Cython else "*.c"))
+]
+
+def numpy_hook():
+    import numpy
+    yield numpy.get_include()
+
+for ext in pkg_extensions:
+    ext.include_dirs_hook(numpy_hook)
 
 setup(
     name="nadist",
@@ -120,15 +156,7 @@ setup(
         "numpy"
     ],
     cmdclass={"build_ext": optional_build_ext},
-    ext_modules=[
-        Extension(
-            splitext(relpath(path, "src").replace(os.sep, "."))[0],
-            sources=[path],
-            include_dirs=[dirname(path), numpy.get_include()]
-        )
-        for root, _, _ in os.walk("src")
-        for path in glob(join(root, "*.pyx" if Cython else "*.c"))
-    ],
+    ext_modules=pkg_extensions,
     tests_require=[
         "tox",
         "pytest-helpers-namespace",
