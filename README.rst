@@ -101,3 +101,8 @@ Note, to combine the coverage data from all the tox environments run:
       - ::
 
             PYTEST_ADDOPTS=--cov-append tox
+
+
+.. image:: https://badges.gitter.im/Midnighter/nadist.svg
+   :alt: Join the chat at https://gitter.im/Midnighter/nadist
+   :target: https://gitter.im/Midnighter/nadist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
